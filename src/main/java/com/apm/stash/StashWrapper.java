@@ -54,7 +54,7 @@ public class StashWrapper {
 				Calendar cal = Calendar.getInstance();
 				SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
 
-				System.out.println("new Runnable Thread Time = " + time.format(cal.getTime()));
+		//		System.out.println("new Runnable Thread Time = " + time.format(cal.getTime()));
 
 				String MetricRootLocation = (GetPropertiesFile.getPropertyValue("MetricLocation"));
 
@@ -217,7 +217,7 @@ public class StashWrapper {
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		executor.scheduleAtFixedRate(servers, 0, 30, TimeUnit.SECONDS);
 		// logger.info("Stash Monitoring started......");
-		System.out.println("Executer hits");
+//		System.out.println("Executer hits");
 
 	}
 }
