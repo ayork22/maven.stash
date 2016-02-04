@@ -33,7 +33,6 @@ public class GetPropertiesFile {
 			}
 		}
 		return prop.getProperty(property);
-
 	}
 
 }
