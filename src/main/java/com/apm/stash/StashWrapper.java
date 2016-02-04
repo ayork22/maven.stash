@@ -1,8 +1,6 @@
 package com.apm.stash;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,17 +16,6 @@ public class StashWrapper {
 
 	static Logger logger = Logger.getLogger(StashWrapper.class);
 
-	// Thread testing
-
-	// public static class MyRunnable implements Runnable {
-	// public void run() {
-	// System.out.println("runnable Test");
-	// Thread thread = Thread.currentThread();
-	// System.out.println(thread.getName());
-	// }
-	// }
-	// Thread testing
-
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws ParseException {
 
@@ -38,23 +25,10 @@ public class StashWrapper {
 			String log4jConfigFile = System.getProperty("user.dir") + File.separator + "stash.properties";
 			PropertyConfigurator.configure(log4jConfigFile);
 		}
-
-		// Thread testing
-
-		// setup each server object
-		// This runs once then kicks off the Executer threads
+		// Executer kicks of off run method @ set interval
 		Runnable servers = new Runnable() {
 
 			public void run() {
-
-				// ********PLace all code from inal main method in this
-				// For Loop
-				// Select all code > Refactor > create Method
-				// logger.info("Starting monitoring for ");
-				Calendar cal = Calendar.getInstance();
-				SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-
-		//		System.out.println("new Runnable Thread Time = " + time.format(cal.getTime()));
 
 				String MetricRootLocation = (GetPropertiesFile.getPropertyValue("MetricLocation"));
 
@@ -79,8 +53,6 @@ public class StashWrapper {
 
 				// add SIZE to Metrics Using CreateMetric method
 				// metricArray is what is used to build Introscope metrics
-				// Removes SIZE & gives you value
-				// (mainWebServiceJSON.remove("size");)
 				metricArray.add(createMetric("LongCounter", MetricRootLocation + ":Number of Repos",
 						mainWebServiceJSON.remove("size")));
 				metricArray.add(
@@ -89,7 +61,6 @@ public class StashWrapper {
 				// *****Grab Project & Repository info******
 
 				JSONArray values = (JSONArray) mainWebServiceJSON.get("values");
-				// Prints values which is new array
 
 				// ******For loop over the Number of Values*******
 				// .size = Array size
@@ -127,10 +98,8 @@ public class StashWrapper {
 
 					long size = ((Long) RepoJSON.get("size")).intValue();
 
-					// *** If RepoJSON Array does NOT have any pull request
-					// info then
-					// skip that repository
-
+					// *** If RepoJSON Array does NOT have any pull request info
+					// then skip that repository
 					// if size not zero do this
 					if (size != 0) {
 						metricArray.add(createMetric("LongCounter", metricLocation + ":Pull Requests - Total",
@@ -171,23 +140,19 @@ public class StashWrapper {
 								logger.debug("State of Pull Request NOT Found");
 							}
 						}
-						// Create metrics for Number of each Pull Request
-						// types
+						// Create metrics for Number of each Pull Request types
 						metricArray.add(createMetric("LongCounter", metricLocation + ":Pull Requests - Open", opens));
 						metricArray
 								.add(createMetric("LongCounter", metricLocation + ":Pull Requests - Merged", merges));
 						metricArray.add(
 								createMetric("LongCounter", metricLocation + ":Pull Requests - Declined", declines));
-
-						// ******TESTING AREA*******
 						metricArray.add(createMetric("StringEvent", MetricRootLocation + ":PluginSuccess", ("YES")));
 					}
 				}
 
 				JSONObject metricsToEPAgent = new JSONObject();
-				// pre-pends "metrics" to the 'metricArray as this is
-				// required by
-				// EPAgent API
+				// pre-pends "metrics" to the 'metricArray as this is required
+				// by EPAgent API
 				metricsToEPAgent.put("metrics", metricArray);
 
 				// Using Properties File to pass in 'sendMetric' parameters
@@ -198,26 +163,18 @@ public class StashWrapper {
 
 			public JSONObject createMetric(String type, String name, Object value) {
 
-				// tring type,String name,Object value){
-
 				JSONObject metric = new JSONObject();
 				metric.put("type", type);
 				metric.put("name", name);
 				metric.put("value", value);
-				// System.out.println("metric = " + metric);
 				return metric;
 
 			}
 		};
 
-		// Runnable Testing********
-		// start monitoring
-		// ScheduledExecutorService executor =
-		// Executors.newScheduledThreadPool(servers.length * 2);
+		// Executer to trigger runnable thread. Delay time is defined in the
+		// stash.properties
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-		executor.scheduleAtFixedRate(servers, 0, 30, TimeUnit.SECONDS);
-		// logger.info("Stash Monitoring started......");
-//		System.out.println("Executer hits");
-
+		executor.scheduleAtFixedRate(servers, 0, Integer.parseInt(GetPropertiesFile.getPropertyValue("delaytime")), TimeUnit.MINUTES);
 	}
 }

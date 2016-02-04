@@ -1,4 +1,4 @@
-    package com.apm.stash;
+package com.apm.stash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,8 +8,6 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import sun.misc.BASE64Encoder;
 
@@ -46,23 +44,14 @@ public class WebServiceHandler {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
 				// *****This returns output from EPAgent after sending it
-
 				while ((output = in.readLine()) != null) {
 					output = output + "\n";
 				}
-			//	System.out.println(output);
-
-				Calendar cal = Calendar.getInstance();
-                SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-                
-             	System.out.println("\nMetrics Posted Successfully TIME = " + time.format(cal.getTime()));
-			//	System.out.println("\nMetrics Posted Successfully..");
 				in.close();
 				StashWrapper.logger.debug("Metrics Posted Successfully..");
 
 			} catch (Exception e) {
-				// System.out.println("\nError while Posting Metrics");
-				// System.out.println(e);
+
 				StashWrapper.logger.error("Error while Posting Metrics : " + e);
 			}
 
