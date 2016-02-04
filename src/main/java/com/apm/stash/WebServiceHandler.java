@@ -8,6 +8,9 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import sun.misc.BASE64Encoder;
 
 @SuppressWarnings("restriction")
@@ -49,7 +52,11 @@ public class WebServiceHandler {
 				}
 			//	System.out.println(output);
 
-				System.out.println("\nMetrics Posted Successfully..");
+				Calendar cal = Calendar.getInstance();
+                SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+                
+             	System.out.println("\nMetrics Posted Successfully TIME = " + time.format(cal.getTime()));
+			//	System.out.println("\nMetrics Posted Successfully..");
 				in.close();
 				StashWrapper.logger.debug("Metrics Posted Successfully..");
 
